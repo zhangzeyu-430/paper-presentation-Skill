@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{TITLE}} - 组会汇报</title>
+  <style>
+    :root {
+      --green: #006b45;
+      --green-2: #0b8159;
+      --mint: #e9f5ef;
+      --ink: #14221c;
+      --muted: #5d6b63;
+      --line: #b8d2c5;
+      --bg: #dfe9e4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    }
+    .deck {
+      height: calc(100vh - 46px);
+      display: grid;
+      place-items: center;
+    }
+    .slide {
+      display: none;
+      position: relative;
+      width: min(100vw, calc((100vh - 46px) * 16 / 9));
+      height: min(calc(100vh - 46px), calc(100vw * 9 / 16));
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(90deg, #fff 0%, #fff 58%, #f4faf7 100%);
+      padding: 34px 42px 48px;
+      border: 1px solid #cbd8d0;
+      box-shadow: 0 18px 50px rgba(0,0,0,.16);
+      overflow: hidden;
+    }
+    .slide.active { display: block; }
+    header {
+      display: grid;
+      grid-template-columns: 58px 1fr 88px;
+      align-items: center;
+      height: 66px;
+    }
+    .sec-no {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      font-weight: 900;
+    }
+    h1 {
+      margin: 0;
+      color: var(--green);
+      font-size: 40px;
+      line-height: 1.05;
+      font-weight: 900;
+    }
+    .mini-logo {
+      justify-self: end;
+      border: 2px solid var(--green);
+      color: var(--green);
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    main {
+      height: calc(100% - 128px);
+      margin-top: 14px;
+    }
+    .two-col { display: grid; grid-template-columns: 1.55fr .95fr; gap: 24px; height: 100%; }
+    .image-layout { display: grid; grid-template-columns: 1.18fr .82fr; gap: 24px; height: 100%; }
+    .method-layout { display: grid; grid-template-columns: 1.35fr .75fr; gap: 22px; height: 100%; }
+    .block, .figure-box, .points, .card {
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,255,255,.92);
+      padding: 18px 22px;
+      overflow: hidden;
+    }
+    .figure-box {
+      display: grid;
+      place-items: center;
+      padding: 10px;
+    }
+    .figure-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .block h3 {
+      margin: 0 0 12px;
+      color: var(--green);
+      font-size: 22px;
+      border-left: 7px solid var(--green);
+      padding-left: 10px;
+    }
+    li {
+      font-size: 21px;
+      line-height: 1.45;
+      margin: 0 0 10px;
+    }
+    .points {
+      background: #f4faf7;
+      border-left: 8px solid var(--green);
+    }
+    .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .kpi {
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      padding: 18px;
+      text-align: center;
+    }
+    .kpi b { display: block; font-size: 48px; color: var(--green); line-height: 1; }
+    .kpi span { color: var(--muted); font-size: 16px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 20px;
+    }
+    th { background: var(--green); color: white; }
+    td, th { padding: 14px 16px; border-bottom: 1px solid var(--line); text-align: left; }
+    footer {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 70px;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .source { color: var(--muted); }
+    .takeaway { display: none; }
+    .cover {
+      background: white;
+      padding: 0;
+    }
+    .corner-logo {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 112px;
+      background: var(--green);
+      color: white;
+      display: grid;
+      place-items: center;
+      border-radius: 0 0 70px 70px;
+      font-weight: 900;
+    }
+    .cover-main {
+      text-align: center;
+      padding: 150px 80px 0;
+    }
+    .cover-main h1 {
+      font-size: 48px;
+      color: var(--green);
+      line-height: 1.12;
+    }
+    .cover-main h2 {
+      font-size: 28px;
+      color: var(--green);
+      margin: 22px 0 36px;
+    }
+    .cover-main p { font-size: 18px; margin: 8px; color: #244238; }
+    .cover-band {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 72px;
+      height: 70px;
+      background: linear-gradient(90deg, var(--green), #5e9b7e);
+      display: flex;
+      gap: 34px;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+    .ending-box {
+      height: 80%;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+    }
+    .ending-box h1 { font-size: 68px; }
+    .ending-box ul { text-align: left; font-size: 22px; line-height: 1.65; }
+    .controls {
+      height: 46px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      background: #edf3ef;
+    }
+    .controls button {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .progress {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100vw;
+      height: 3px;
+      background: #c9d8d0;
+    }
+    .progress span { display: block; height: 100%; background: var(--green); width: 0; }
+    aside.notes { display: none; }
+    body.show-notes aside.notes {
+      display: block;
+      position: fixed;
+      right: 18px;
+      bottom: 60px;
+      width: 520px;
+      max-height: 45vh;
+      overflow: auto;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 16px 50px rgba(0,0,0,.18);
+      font-size: 14px;
+      line-height: 1.5;
+      z-index: 30;
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <!--
+      Generated slides must use <section class="slide layout-*"> and include:
+      h1, .claim, at least two of .context/.explain/.evidence-reading/.caption,
+      .source, .pager, and aside.notes. Use references/layout_patterns.md for layout-* names.
+      Do not render a floating bottom takeaway bar; integrate the conclusion into .claim,
+      side cards, figure labels, or speaker notes so it never covers figures/source text.
+    -->
+    {{SLIDES}}
+  </main>
+  <nav class="controls" aria-label="翻页控制">
+    <button id="prevBtn" type="button">上一页</button>
+    <button id="noteBtn" type="button">讲稿</button>
+    <button id="nextBtn" type="button">下一页</button>
+  </nav>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    let current = Math.max(0, Math.min(slides.length - 1, Number(location.hash.replace('#slide-', '')) - 1 || 0));
+    function show(i) {
+      current = Math.max(0, Math.min(slides.length - 1, i));
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+      document.querySelectorAll('.pager').forEach((p, idx) => p.textContent = `${idx + 1}/${slides.length}`);
+      document.getElementById('progressBar').style.width = `${((current + 1) / slides.length) * 100}%`;
+      history.replaceState(null, '', `#slide-${current + 1}`);
+    }
+    document.getElementById('prevBtn').addEventListener('click', () => show(current - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => show(current + 1));
+    document.getElementById('noteBtn').addEventListener('click', () => document.body.classList.toggle('show-notes'));
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) show(current + 1);
+      if (['ArrowLeft', 'PageUp'].includes(e.key)) show(current - 1);
+      if (e.key === 'Home') show(0);
+      if (e.key === 'End') show(slides.length - 1);
+      if (e.key.toLowerCase() === 'n') document.body.classList.toggle('show-notes');
+    });
+    show(current);
+  </script>
+</body>
+</html>
